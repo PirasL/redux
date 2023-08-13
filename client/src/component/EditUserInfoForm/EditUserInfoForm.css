@@ -1,0 +1,36 @@
+.edit-user-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.edit-user-form {
+    width: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+.edit-user-input-container {
+    display: flex;
+    flex-direction: column;
+    width: 250px;
+    margin: 10px 0;
+}
+
+.edit-user-form-label {
+    align-self: flex-start;
+}
+
+.edit-user-form-input {
+    height: 30px;
+    font-size: 18px;
+}
+
+.edit-user-button-container {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 10px;
+}
