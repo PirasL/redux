@@ -1,14 +1,99 @@
-swagger: '2.0'
+swagger: "2.0"
 info:
   title: Bank Argent API documentation
   description: Contains all available API endpoints in this codebase
-  version: '1.0.0'
-  termsOfService: 'http://swagger.io/terms/'
+  version: "1.0.0"
+  termsOfService: "http://swagger.io/terms/"
 host: localhost:3001
 basePath: /api/v1
 schemes:
   - http
 paths:
+  /user/accounts/{accountNumber}/transactions:
+    get:
+      tags:
+        - Transaction Module
+      summary: Retrieve all the transactions linked to the specified account
+      parameters:
+        - name: accountNumber
+          type: string
+          in: path
+          required: true
+          description: The account number to retrieve
+          # schema:
+      responses:
+        "200":
+          description: Successful response
+  /user/accounts/{accountNumber}/{transactionId}:
+    get:
+      tags:
+        - Transaction Module
+      summary: Retrieve the transaction info
+      parameters:
+        - name: transactionId
+          type: string
+          in: path
+          required: true
+          description: ID of the transaction
+        - name: accountNumber
+          type: string
+          in: path
+          required: true
+          description: ID of the account
+      responses:
+        "200":
+          description: Login Successfully
+          schema:
+            $ref: "#/definitions/Transaction"
+    put:
+      security:
+        - Bearer: []
+      tags:
+        - Transaction Module
+      summary: Update transaction info
+      parameters:
+        - name: transactionId
+          type: string
+          in: path
+          required: true
+          description: ID of the transaction
+        - name: accountNumber
+          type: string
+          in: path
+          required: true
+          description: ID of the account
+      responses:
+        "200":
+          description: Transaction succesfully modified
+  /user/accounts:
+    get:
+      tags:
+        - Account Module
+      summary: Retrieve user accounts
+      responses:
+        "200":
+          description: User accounts retrieved successully
+          schema:
+            $ref: "#/definitions/Account"
+  /user/accounts/{accountNumber}:
+    get:
+      tags:
+        - Account Module
+      summary: Retrieve account details
+      parameters:
+        - name: accountNumber
+          type: string
+          in: path
+          required: true
+          description: The account number to retrieve
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Retrieval successful
+          schema:
+            $ref: "#/definitions/Account"
+
   /user/login:
     post:
       tags:
@@ -21,17 +106,17 @@ paths:
           description: Login Payload
           required: true
           schema:
-            $ref: '#/definitions/Login'
+            $ref: "#/definitions/Login"
       produces:
         - application/json
       responses:
-        '200':
+        "200":
           description: Login Successfully
           schema:
-            $ref: '#/definitions/LoginResponse'
-        '400':
+            $ref: "#/definitions/LoginResponse"
+        "400":
           description: Invalid Fields
-        '500':
+        "500":
           description: Internal Server Error
   /user/signup:
     post:
@@ -45,17 +130,17 @@ paths:
           description: Signup Payload
           required: true
           schema:
-            $ref: '#/definitions/User'
+            $ref: "#/definitions/User"
       produces:
         - application/json
       responses:
-        '200':
+        "200":
           description: Signup Successfully
           schema:
-            $ref: '#/definitions/ApiResponse'
-        '400':
+            $ref: "#/definitions/ApiResponse"
+        "400":
           description: Invalid Fields
-        '500':
+        "500":
           description: Internal Server Error
   /user/profile:
     post:
@@ -66,15 +151,15 @@ paths:
       summary: User Profile API
       description: API for fetching a user profile
       #produces:
-       # - application/json
+      # - application/json
       responses:
-        '200':
+        "200":
           description: User profile retrieved successully
           schema:
-            $ref: '#/definitions/ApiResponse'
-        '400':
+            $ref: "#/definitions/ApiResponse"
+        "400":
           description: Invalid Fields
-        '500':
+        "500":
           description: Internal Server Error
     put:
       security:
@@ -89,17 +174,17 @@ paths:
           description: Update user profile attributes
           required: true
           schema:
-            $ref: '#/definitions/UserProfile'
+            $ref: "#/definitions/UserProfile"
       produces:
         - application/json
       responses:
-        '200':
-          description: User profile retrieved successully
+        "200":
+          description: User profile updated successully
           schema:
-            $ref: '#/definitions/ApiResponse'
-        '400':
+            $ref: "#/definitions/ApiResponse"
+        "400":
           description: Invalid Fields
-        '500':
+        "500":
           description: Internal Server Error
 securityDefinitions:
   Bearer:
@@ -107,6 +192,46 @@ securityDefinitions:
     name: Authorization
     in: header
 definitions:
+  Transaction:
+    properties:
+      date:
+        type: string
+        description: Date of the transaction
+      transactionType:
+        type: string
+        description: Type of the transaction
+      transactionCategory:
+        type: string
+        description: Category of the transaction
+      transactionId:
+        type: string
+        description: Transaction Id
+      transactionAmount:
+        type: number
+        description: Amount of the transaction
+      creditorId:
+        type: string
+        description: Creditor's bank account id
+      debtorId:
+        type: string
+        description: Debtor's bank account id
+      note:
+        type: string
+        description: Optional note regarding the transaction
+      newBalance:
+        type: number
+        description: Account's new balance
+  Account:
+    properties:
+      accountType:
+        type: string
+        description: Account type (checking, savings, MMA...)
+      availableFunds:
+        type: number
+        description: Account available funds
+      transactions:
+        type: array
+        description: list of all the transaction linked to the account
   User:
     properties:
       email:

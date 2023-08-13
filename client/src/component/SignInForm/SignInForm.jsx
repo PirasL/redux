@@ -7,18 +7,28 @@ export default function SignInForm() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({});
   const [logUser] = useLoginUserMutation();
+  const [error, setError] = useState(false);
 
   function submitDataHandler(e) {
     e.preventDefault();
-    console.log(formData);
+
     logUser(formData).then((res) => {
-      if (res.data.status === 200) {
+      console.log(res);
+      if (res.data) {
+        console.log("trigger");
         localStorage.setItem("token", JSON.stringify(res.data.body.token));
         navigate("/user", { replace: true });
-      } else {
-        console.log("Wrong credentials");
+      } else if (res.error) {
+        errorMessageHandler();
       }
     });
+  }
+
+  function errorMessageHandler() {
+    setError(true);
+    setTimeout(() => {
+      setError(false);
+    }, "5000");
   }
 
   function inputChangeHandler(e) {
@@ -64,6 +74,7 @@ export default function SignInForm() {
           </button>
         </form>
       </section>
+      {error && <div className="toast">Wrong credentials !</div>}
     </main>
   );
 }

@@ -19,7 +19,6 @@ export default function EditUserInfoForm({
   function submitNewUserName(e) {
     editUserName(newUserName);
     toggler(e);
-    // console.log("hey");
   }
 
   return (
@@ -28,7 +27,7 @@ export default function EditUserInfoForm({
         <h1>Edit user info</h1>
         <form className="edit-user-form">
           <div className="edit-user-input-container">
-            <label className="edit-user-form-label">User name</label>
+            <label className="edit-user-form-label">User name :</label>
             <input
               className="edit-user-form-input"
               type="text"
@@ -39,7 +38,7 @@ export default function EditUserInfoForm({
           </div>
 
           <div className="edit-user-input-container">
-            <label className="edit-user-form-label">First name</label>
+            <label className="edit-user-form-label">First name :</label>
             <input
               className="edit-user-form-input"
               type="text"
@@ -48,7 +47,7 @@ export default function EditUserInfoForm({
             />
           </div>
           <div className="edit-user-input-container">
-            <label className="edit-user-form-label">Last name</label>
+            <label className="edit-user-form-label">Last name :</label>
             <input
               className="edit-user-form-input"
               type="text"
