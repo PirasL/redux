@@ -16,9 +16,7 @@ export default function SignInForm() {
     e.preventDefault();
 
     logUser(formData).then((res) => {
-      console.log(res);
       if (res.data) {
-        console.log("trigger");
         localStorage.setItem("token", JSON.stringify(res.data.body.token));
         navigate("/user", { replace: true });
       } else if (res.error) {
