@@ -5,7 +5,10 @@ import { useLoginUserMutation } from "../../features/users/userApi";
 
 export default function SignInForm() {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
   const [logUser] = useLoginUserMutation();
   const [error, setError] = useState(false);
 
