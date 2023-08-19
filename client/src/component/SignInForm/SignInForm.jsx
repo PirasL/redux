@@ -7,7 +7,7 @@ import { getCookie } from "../../utils/getCookie";
 
 export default function SignInForm() {
   const navigate = useNavigate();
-  // const rememberMeButtonRef = useRef();
+
   useEffect(() => {
     if (getCookie()) {
       const { email, password } = getCookie();
@@ -22,7 +22,7 @@ export default function SignInForm() {
   });
   const [logUser] = useLoginUserMutation();
   const [error, setError] = useState(false);
-
+  console.log(useLoginUserMutation());
   function submitDataHandler(e) {
     e.preventDefault();
     logUser(formData).then((res) => {
@@ -33,9 +33,8 @@ export default function SignInForm() {
           createLogCookie(formData);
         } else {
           document.cookie =
-            "remember_me" + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            "remember_me=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
         }
-        // add or remove cookie logic
       } else if (res.error) {
         errorMessageHandler();
       }
