@@ -22,7 +22,7 @@ export default function SignInForm() {
   });
   const [logUser] = useLoginUserMutation();
   const [error, setError] = useState(false);
-  console.log(useLoginUserMutation());
+
   function submitDataHandler(e) {
     e.preventDefault();
     logUser(formData).then((res) => {
