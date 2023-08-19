@@ -1,24 +1,41 @@
 import "./SignInForm.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLoginUserMutation } from "../../features/users/userApi";
+import { createLogCookie } from "../../utils/rememberMeCookie";
+import { getCookie } from "../../utils/getCookie";
 
 export default function SignInForm() {
   const navigate = useNavigate();
+  // const rememberMeButtonRef = useRef();
+  useEffect(() => {
+    if (getCookie()) {
+      const { email, password } = getCookie();
+      setFormData({ email: email, password: password, rememberMe: true });
+    }
+  }, []);
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
+    rememberMe: false,
   });
   const [logUser] = useLoginUserMutation();
   const [error, setError] = useState(false);
 
   function submitDataHandler(e) {
     e.preventDefault();
-
     logUser(formData).then((res) => {
       if (res.data) {
         localStorage.setItem("token", JSON.stringify(res.data.body.token));
         navigate("/user", { replace: true });
+        if (formData.rememberMe) {
+          createLogCookie(formData);
+        } else {
+          document.cookie =
+            "remember_me" + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        }
+        // add or remove cookie logic
       } else if (res.error) {
         errorMessageHandler();
       }
@@ -67,7 +84,15 @@ export default function SignInForm() {
             />
           </div>
           <div className="input-remember">
-            <input name="rememberMe" type="checkbox" id="remember-me" />
+            <input
+              name="rememberMe"
+              type="checkbox"
+              id="remember-me"
+              onChange={inputChangeHandler}
+              checked={formData.rememberMe}
+              value={formData.rememberMe}
+              // ref={isRememberMeButtonChecked}
+            />
             <label htmlFor="remember-me">Remember me</label>
           </div>
           <button type="submit" className="sign-in-button">
