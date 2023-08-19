@@ -24,27 +24,6 @@ paths:
       responses:
         "200":
           description: Successful response
-  /user/accounts/{accountNumber}/{transactionId}:
-    get:
-      tags:
-        - Transaction Module
-      summary: Retrieve the transaction info
-      parameters:
-        - name: transactionId
-          type: string
-          in: path
-          required: true
-          description: ID of the transaction
-        - name: accountNumber
-          type: string
-          in: path
-          required: true
-          description: ID of the account
-      responses:
-        "200":
-          description: Login Successfully
-          schema:
-            $ref: "#/definitions/Transaction"
     put:
       security:
         - Bearer: []

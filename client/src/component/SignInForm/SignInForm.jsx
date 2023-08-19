@@ -90,7 +90,6 @@ export default function SignInForm() {
               onChange={inputChangeHandler}
               checked={formData.rememberMe}
               value={formData.rememberMe}
-              // ref={isRememberMeButtonChecked}
             />
             <label htmlFor="remember-me">Remember me</label>
           </div>
