@@ -12,9 +12,9 @@ export default function Navbar() {
   const navigate = useNavigate();
 
   function logOut(e) {
+    e.preventDefault();
     localStorage.removeItem("token");
     dispatch(userApi.util.resetApiState());
-    e.preventDefault();
     navigate("/");
   }
 

@@ -10,25 +10,12 @@ schemes:
   - http
 paths:
   /user/accounts/{accountNumber}/transactions:
-    get:
+    put:
       tags:
         - Transaction Module
-      summary: Retrieve all the transactions linked to the specified account
-      parameters:
-        - name: accountNumber
-          type: string
-          in: path
-          required: true
-          description: The account number to retrieve
-          # schema:
-      responses:
-        "200":
-          description: Successful response
-    put:
       security:
         - Bearer: []
-      tags:
-        - Transaction Module
+
       summary: Update transaction info
       parameters:
         - name: transactionId
