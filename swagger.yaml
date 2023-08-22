@@ -386,23 +386,6 @@ components:
         - type
         - id
         - amount
-    User:
-      properties:
-        email:
-          type: string
-          description: user email
-        password:
-          type: string
-          description: user password
-        firstName:
-          type: string
-          description: user first name
-        lastName:
-          type: string
-          description: user last name
-        userName:
-          type: string
-          description: user public name
     Account:
       properties:
         id:
@@ -423,15 +406,3 @@ components:
         - type
         - id
         - balance
-    TransactionInput:
-      type: object
-      properties:
-        amount:
-          type: string
-          description: Transaction category
-        note:
-          type: string
-          description: Transaction description
-      required:
-        - category
-        - note
