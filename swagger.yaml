@@ -1,85 +1,182 @@
-swagger: "2.0"
+openapi: 3.0.0
 info:
+  version: 1.0.0
   title: Bank Argent API documentation
   description: Contains all available API endpoints in this codebase
-  version: "1.0.0"
-  termsOfService: "http://swagger.io/terms/"
-host: localhost:3001
-basePath: /api/v1
-schemes:
-  - http
-paths:
-  /user/accounts/{accountNumber}/transactions:
+servers:
+  - url: localhost:3001/api/v1
+    description:  server
+paths: 
+  /transactions/{transactionId}:
     put:
+      summary: Update a transaction
       tags:
         - Transaction Module
+      description: Update transaction details
       security:
-        - Bearer: []
-
-      summary: Update transaction info
+        - JWT: [] 
       parameters:
         - name: transactionId
-          type: string
           in: path
           required: true
-          description: ID of the transaction
-        - name: accountNumber
-          type: string
-          in: path
-          required: true
-          description: ID of the account
+          schema:
+            type: string
+          description: ID of the transaction to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionInput'
       responses:
-        "200":
-          description: Transaction succesfully modified
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction'
+        '400':
+          description: Bad request
+        '403': 
+          description: Unauthorized
+        '404':
+          description: Transaction not found
   /user/accounts:
     get:
       tags:
         - Account Module
       summary: Retrieve user accounts
+      security:
+        - JWT: [] 
       responses:
         "200":
           description: User accounts retrieved successully
-          schema:
-            $ref: "#/definitions/Account"
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#/components/schemas/Account'
+              example: 
+                  - id: "fRDEEE232DRE"
+                    type: "Electronic"
+                    balance: 500.00
+                    transactions:
+                      - id: "UIDeE23XFDEEvEDF"
+                        amount: 120.0
+                        type: "debit"
+                        description: "Online purchase"
+                      - id: "FDSLEZde322VD"
+                        amount: 300.0
+                        type: "debit"
+                        description: "Grocery shopping"
+                      - id: "DSEEE432ERD"
+                        amount: 50.0
+                        type: "credit"
+                        description: "Refund"
+                  - id: "ABC123XYZ"
+                    type: "Savings"
+                    balance: 2500.00
+                    transactions:
+                      - id: "KLM789JKL"
+                        amount: 200.0
+                        type: "debit"
+                        description: "Withdrawal"
+                      - id: "PQR456MNO"
+                        amount: 500.0
+                        type: "debit"
+                        description: "Vacation booking"
+                      - id: "STU123VWX"
+                        amount: 1000.0
+                        type: "credit"
+                        description: "Salary deposit"
+                      - id: "YZA345BCD"
+                        amount: 300.0
+                        type: "debit"
+                        description: "Electronics purchase"
+                  - id: "ZYX987WVU"
+                    type: "Checking"
+                    balance: 1200.00
+                    transactions:
+                      - id: "QWE567RTY"
+                        amount: 80.0
+                        type: "debit"
+                        description: "Dinner with friends"
+                      - id: "ASD123FGH"
+                        amount: 150.0
+                        type: "debit"
+                        description: "Clothing shopping"
+
+        "400":
+          description: Bad request
+        "403":
+          description: Unauthorized
+        "404":
+          description: Account not found
   /user/accounts/{accountNumber}:
     get:
       tags:
         - Account Module
       summary: Retrieve account details
+      security:
+        - JWT: [] 
       parameters:
         - name: accountNumber
-          type: string
           in: path
           required: true
-          description: The account number to retrieve
-      produces:
-        - application/json
+          schema:
+            type: string
+          description: ID of the account to retrieve
       responses:
         "200":
           description: Retrieval successful
-          schema:
-            $ref: "#/definitions/Account"
-
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+              examples:
+                example:
+                  value:
+                    id: "123456"
+                    type: "savings"
+                    balances: 1000.00
+                    owner: "John Doe"
+                    transactions:
+                      - id: "UIDeE23XFDEEvEDF"
+                        amount: 120.0
+                        description: "OC payment"
+                      - id: "FDSLEZde322VD"
+                        amount: 400
+                        description: "gas tank"
+        "404":
+          description: Account not found
+        "403":
+          description: Unauthorized
   /user/login:
     post:
       tags:
         - User Module
-      summary: Login
-      description: API for Login
-      parameters:
-        - in: body
-          name: body
-          description: Login Payload
-          required: true
-          schema:
-            $ref: "#/definitions/Login"
-      produces:
-        - application/json
+      summary: Login endpoint
+      description: Login endpoint
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: 
+                email: 
+                  type: string
+                  description: user email
+                password: 
+                  type: string
+                  description: user password
+            example: 
+              email: "johndoe@gmail.com"
+              password: "johndoePWD@!"
       responses:
         "200":
-          description: Login Successfully
-          schema:
-            $ref: "#/definitions/LoginResponse"
+          description:  Successfully Logged in
         "400":
           description: Invalid Fields
         "500":
@@ -90,20 +187,37 @@ paths:
         - User Module
       summary: Signup
       description: API for Signup
-      parameters:
-        - in: body
-          name: body
-          description: Signup Payload
-          required: true
-          schema:
-            $ref: "#/definitions/User"
-      produces:
-        - application/json
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: 
+                email: 
+                  type: string
+                  description: user email
+                password: 
+                  type: string
+                  description: user password
+                lastName:
+                  type: string
+                  description: user lastName
+                userName:
+                  type: string
+                  description: user Username
+                firstName: 
+                  type: string
+                  description: user Firstname
+            example: 
+              email: "johndoe@gmail.com"
+              password: "johndoePWD@!"
+              firstName: "John"
+              lastName: "Doe"
+              userName: "WarrenBuffet2.0"
       responses:
         "200":
-          description: Signup Successfully
-          schema:
-            $ref: "#/definitions/ApiResponse"
+          description: Signup Successfull
         "400":
           description: Invalid Fields
         "500":
@@ -111,139 +225,129 @@ paths:
   /user/profile:
     post:
       security:
-        - Bearer: []
+        - JWT: []
       tags:
         - User Module
-      summary: User Profile API
+      summary: Fetch user profile
       description: API for fetching a user profile
-      #produces:
-      # - application/json
       responses:
         "200":
           description: User profile retrieved successully
-          schema:
-            $ref: "#/definitions/ApiResponse"
         "400":
           description: Invalid Fields
+        "403":
+          description: Unauthorized
         "500":
           description: Internal Server Error
     put:
       security:
-        - Bearer: []
+        - JWT: []
       tags:
         - User Module
-      summary: User Profile API
+      summary: Update user profile
       description: API for updating a user profile
-      parameters:
-        - in: body
-          name: body
-          description: Update user profile attributes
-          required: true
-          schema:
-            $ref: "#/definitions/UserProfile"
-      produces:
-        - application/json
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: 
+                username: 
+                  type: string
+                  description: user email
+            example: 
+              username: "JohnDoeNewUserName"
       responses:
         "200":
           description: User profile updated successully
-          schema:
-            $ref: "#/definitions/ApiResponse"
         "400":
           description: Invalid Fields
+        "403":
+          description: Unauthorized
         "500":
           description: Internal Server Error
-securityDefinitions:
-  Bearer:
-    type: apiKey
-    name: Authorization
-    in: header
-definitions:
-  Transaction:
-    properties:
-      date:
-        type: string
-        description: Date of the transaction
-      transactionType:
-        type: string
-        description: Type of the transaction
-      transactionCategory:
-        type: string
-        description: Category of the transaction
-      transactionId:
-        type: string
-        description: Transaction Id
-      transactionAmount:
-        type: number
-        description: Amount of the transaction
-      creditorId:
-        type: string
-        description: Creditor's bank account id
-      debtorId:
-        type: string
-        description: Debtor's bank account id
-      note:
-        type: string
-        description: Optional note regarding the transaction
-      newBalance:
-        type: number
-        description: Account's new balance
-  Account:
-    properties:
-      accountType:
-        type: string
-        description: Account type (checking, savings, MMA...)
-      availableFunds:
-        type: number
-        description: Account available funds
-      transactions:
-        type: array
-        description: list of all the transaction linked to the account
-  User:
-    properties:
-      email:
-        type: string
-        description: user email
-      password:
-        type: string
-        description: user password
-      firstName:
-        type: string
-        description: user first name
-      lastName:
-        type: string
-        description: user last name
-      userName:
-        type: string
-        description: user public name
-  Login:
-    properties:
-      email:
-        type: string
-        description: user email
-      password:
-        type: string
-        description: user password
-  ApiResponse:
-    type: object
-    properties:
-      status:
-        type: integer
-      message:
-        type: string
-      body:
-        type: object
-        properties:
-          id:
-            type: string
-          email:
-            type: string
-  LoginResponse:
-    type: object
-    properties:
-      token:
-        type: string
-  UserProfile:
-    type: object
-    properties:
-      userName:
-        type: string
+security:
+  - JWT: []
+components:
+  securitySchemes:
+    JWT:
+      type: apiKey
+      in: header
+      name: Authorization
+  schemas:
+    Transaction:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Transaction ID
+        amount:
+          type: number
+          format: double
+          description: Transaction amount
+        type: 
+          type: string
+          description: Type of transaction
+        category:
+          type: string
+          description: Optional custom type from the user
+        Note: 
+          type: string
+          description: Optional note from the user
+        description:
+          type: string
+          description: Transaction description
+      required:
+        - type
+        - id
+        - amount
+    User:
+      properties:
+        email:
+          type: string
+          description: user email
+        password:
+          type: string
+          description: user password
+        firstName:
+          type: string
+          description: user first name
+        lastName:
+          type: string
+          description: user last name
+        userName:
+          type: string
+          description: user public name
+    Account:
+      properties:
+        id: 
+          type: string
+          description: Account Id
+        type:
+          type: string
+          description: Account type (checking, savings, MMA...)
+        balance:
+          type: number
+          description: Account available funds
+        transactions:
+          type: array
+          items:
+              $ref: '#/components/schemas/Transaction'
+          description: list of all the transaction linked to the account
+      required:
+        - type
+        - id
+        - balance
+    TransactionInput:
+      type: object
+      properties:
+        amount:
+          type: string
+          description: Transaction category
+        note:
+          type: string
+          description: Transaction description
+      required:
+        - category
+        - note
