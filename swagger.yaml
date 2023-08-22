@@ -5,16 +5,16 @@ info:
   description: Contains all available API endpoints in this codebase
 servers:
   - url: localhost:3001/api/v1
-    description:  server
-paths: 
-  /transactions/{transactionId}:
+    description: server
+paths:
+  /user/accounts/{accountNumber}/transactions/{transactionId}:
     put:
       summary: Update a transaction
       tags:
         - Transaction Module
       description: Update transaction details
       security:
-        - JWT: [] 
+        - JWT: []
       parameters:
         - name: transactionId
           in: path
@@ -22,24 +22,76 @@ paths:
           schema:
             type: string
           description: ID of the transaction to update
+        - name: accountNumber
+          in: path
+          required: true
+          schema:
+            type: string
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TransactionInput'
+              $ref: "#/components/schemas/Transaction"
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Transaction'
-        '400':
+                $ref: "#/components/schemas/Transaction"
+        "400":
           description: Bad request
-        '403': 
+        "403":
           description: Unauthorized
-        '404':
+        "404":
+          description: Transaction not found
+    get:
+      tags:
+        - Transaction Module
+      description: Retrieve a single transaction's data
+      summary: Retrieve a single transaction's data
+      security:
+        - JWT: []
+      parameters:
+        - name: transactionId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the transaction to update
+        - name: accountNumber
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  amount:
+                    type: number
+                    format: double
+                  type:
+                    type: string
+                  description:
+                    type: string
+              example:
+                id: "UIDeE23XFDEEvEDF"
+                amount: 120.0
+                type: "debit"
+                description: "Online purchase"
+        400:
+          description: Bad Request
+        403:
+          description: Unauthaurized
+        404:
           description: Transaction not found
   /user/accounts:
     get:
@@ -47,7 +99,7 @@ paths:
         - Account Module
       summary: Retrieve user accounts
       security:
-        - JWT: [] 
+        - JWT: []
       responses:
         "200":
           description: User accounts retrieved successully
@@ -55,57 +107,57 @@ paths:
             application/json:
               schema:
                 type: array
-                items: 
-                  $ref: '#/components/schemas/Account'
-              example: 
-                  - id: "fRDEEE232DRE"
-                    type: "Electronic"
-                    balance: 500.00
-                    transactions:
-                      - id: "UIDeE23XFDEEvEDF"
-                        amount: 120.0
-                        type: "debit"
-                        description: "Online purchase"
-                      - id: "FDSLEZde322VD"
-                        amount: 300.0
-                        type: "debit"
-                        description: "Grocery shopping"
-                      - id: "DSEEE432ERD"
-                        amount: 50.0
-                        type: "credit"
-                        description: "Refund"
-                  - id: "ABC123XYZ"
-                    type: "Savings"
-                    balance: 2500.00
-                    transactions:
-                      - id: "KLM789JKL"
-                        amount: 200.0
-                        type: "debit"
-                        description: "Withdrawal"
-                      - id: "PQR456MNO"
-                        amount: 500.0
-                        type: "debit"
-                        description: "Vacation booking"
-                      - id: "STU123VWX"
-                        amount: 1000.0
-                        type: "credit"
-                        description: "Salary deposit"
-                      - id: "YZA345BCD"
-                        amount: 300.0
-                        type: "debit"
-                        description: "Electronics purchase"
-                  - id: "ZYX987WVU"
-                    type: "Checking"
-                    balance: 1200.00
-                    transactions:
-                      - id: "QWE567RTY"
-                        amount: 80.0
-                        type: "debit"
-                        description: "Dinner with friends"
-                      - id: "ASD123FGH"
-                        amount: 150.0
-                        type: "debit"
-                        description: "Clothing shopping"
+                items:
+                  $ref: "#/components/schemas/Account"
+              example:
+                - id: "fRDEEE232DRE"
+                  type: "Electronic"
+                  balance: 500.00
+                  transactions:
+                    - id: "UIDeE23XFDEEvEDF"
+                      amount: 120.0
+                      type: "debit"
+                      description: "Online purchase"
+                    - id: "FDSLEZde322VD"
+                      amount: 300.0
+                      type: "debit"
+                      description: "Grocery shopping"
+                    - id: "DSEEE432ERD"
+                      amount: 50.0
+                      type: "credit"
+                      description: "Refund"
+                - id: "ABC123XYZ"
+                  type: "Savings"
+                  balance: 2500.00
+                  transactions:
+                    - id: "KLM789JKL"
+                      amount: 200.0
+                      type: "debit"
+                      description: "Withdrawal"
+                    - id: "PQR456MNO"
+                      amount: 500.0
+                      type: "debit"
+                      description: "Vacation booking"
+                    - id: "STU123VWX"
+                      amount: 1000.0
+                      type: "credit"
+                      description: "Salary deposit"
+                    - id: "YZA345BCD"
+                      amount: 300.0
+                      type: "debit"
+                      description: "Electronics purchase"
+                - id: "ZYX987WVU"
+                  type: "Checking"
+                  balance: 1200.00
+                  transactions:
+                    - id: "QWE567RTY"
+                      amount: 80.0
+                      type: "debit"
+                      description: "Dinner with friends"
+                    - id: "ASD123FGH"
+                      amount: 150.0
+                      type: "debit"
+                      description: "Clothing shopping"
 
         "400":
           description: Bad request
@@ -119,7 +171,7 @@ paths:
         - Account Module
       summary: Retrieve account details
       security:
-        - JWT: [] 
+        - JWT: []
       parameters:
         - name: accountNumber
           in: path
@@ -133,7 +185,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Account'
+                $ref: "#/components/schemas/Account"
               examples:
                 example:
                   value:
@@ -152,6 +204,38 @@ paths:
           description: Account not found
         "403":
           description: Unauthorized
+  /user/accounts/{accountNumber}/transactions:
+    get:
+      tags:
+        - Transaction Module
+      summary: Retrieve retrieve all the transactions linked to an account
+      security:
+        - JWT: []
+      parameters:
+        - name: accountNumber
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the account where all the transactions
+      responses:
+        "200":
+          description: Retrieval successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Transaction"
+              example:
+                - id: "UIDeE23XFDEEvEDF"
+                  amount: 120.0
+                  description: "OC payment"
+                - id: "FDSLEZde322VD"
+                  amount: 400
+                  description: "gas tank"
+        "404":
+          description: Account not found
+        "403":
+          description: Unauthorized
   /user/login:
     post:
       tags:
@@ -164,19 +248,19 @@ paths:
           application/json:
             schema:
               type: object
-              properties: 
-                email: 
+              properties:
+                email:
                   type: string
                   description: user email
-                password: 
+                password:
                   type: string
                   description: user password
-            example: 
+            example:
               email: "johndoe@gmail.com"
               password: "johndoePWD@!"
       responses:
         "200":
-          description:  Successfully Logged in
+          description: Successfully Logged in
         "400":
           description: Invalid Fields
         "500":
@@ -193,11 +277,11 @@ paths:
           application/json:
             schema:
               type: object
-              properties: 
-                email: 
+              properties:
+                email:
                   type: string
                   description: user email
-                password: 
+                password:
                   type: string
                   description: user password
                 lastName:
@@ -206,10 +290,10 @@ paths:
                 userName:
                   type: string
                   description: user Username
-                firstName: 
+                firstName:
                   type: string
                   description: user Firstname
-            example: 
+            example:
               email: "johndoe@gmail.com"
               password: "johndoePWD@!"
               firstName: "John"
@@ -252,11 +336,11 @@ paths:
           application/json:
             schema:
               type: object
-              properties: 
-                username: 
+              properties:
+                username:
                   type: string
                   description: user email
-            example: 
+            example:
               username: "JohnDoeNewUserName"
       responses:
         "200":
@@ -286,13 +370,13 @@ components:
           type: number
           format: double
           description: Transaction amount
-        type: 
+        type:
           type: string
           description: Type of transaction
         category:
           type: string
           description: Optional custom type from the user
-        Note: 
+        Note:
           type: string
           description: Optional note from the user
         description:
@@ -321,7 +405,7 @@ components:
           description: user public name
     Account:
       properties:
-        id: 
+        id:
           type: string
           description: Account Id
         type:
@@ -333,7 +417,7 @@ components:
         transactions:
           type: array
           items:
-              $ref: '#/components/schemas/Transaction'
+            $ref: "#/components/schemas/Transaction"
           description: list of all the transaction linked to the account
       required:
         - type
